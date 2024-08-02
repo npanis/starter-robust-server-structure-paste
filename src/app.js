@@ -1,25 +1,11 @@
 const express = require("express");
 const app = express();
 const pastes = require("./data/pastes-data"); // Reads, executes, and returns the exports object from the ./data/pastes-data file, assigning it to a variable
+const pastesRouter = require("./pastes/pastes.router"); // import router
 
-//Get specific data per id
-app.use("/pastes/:pasteId", (req, res, next) => {
-  const { pasteId}  = req.params;
-  const foundPaste = pastes.find((paste) => paste.id === Number(pasteId));
-
-  console.log(pasteId, foundPaste);
-  if (foundPaste) {
-    res.json({ data: foundPaste });
-  } else {
-    next(`Paste id not found: ${pasteId}`);
-  }
-});
-
-//Defines a handler for the /pastes path
-app.use("/pastes", (req,res) => { 
-  res.json( { data: pastes }); //Defines a handler for the /pastes path
-});
-
+app.use(express.json());
+// GET
+app.use("/pastes", pastesRouter); // Note: app.use
 
 
 // Not found handler
@@ -28,9 +14,65 @@ app.use((request, response, next) => {
 });
 
 // Error handler
+app.use((error, req, res, next) => {
+  console.error(error);
+  const { status = 500, message = "Something went wrong!" } = error;
+  res.status(status).json({ error: message });
+});
+
+module.exports = app;
+
+/*
+In cases of keys:
+const express = require("express");
+const app = express();
+const users = require("./data/users-data");
+const states = require("./data/states-data");
+
+// Return a single user by id from /users/:userId in form of { data: Object }
+app.use("/users/:userId", (req, res, next) => {
+  const { userId } = req.params;
+  const foundUser = users.find((user) => user.id === Number(userId));
+  if (foundUser) {
+    res.json( { data: foundUser });
+  } else {
+    next(`User ID not found: ${userId}`);
+  }
+});
+
+// Return an array of users from /users in form of { data: Array }
+app.use("/users", (req, res) => {
+  res.json({ data: users});
+});
+
+//  Return a single state from /states/:stateCode in the form of { data: { stateCode: String, name: String } }
+app.use("/states/:stateCode", (req, res, next) => {
+  const { stateCode } = req.params;
+  const foundState = states[stateCode];
+  if (foundState) {
+    res.json( { data: { stateCode: stateCode, name: foundState } });
+  } else {
+    next(`State code not found: ${stateCode}`);
+  }
+});
+
+// Return all states from /states in the form of { data: Array }
+app.use("/states", (req, res) => {
+  res.json({ data: states});
+});
+
+
+
+
+// Add not-found handler.
+app.use((req, res, next) => {
+  next(`Not found: ${req.originalUrl}`);
+});
+// Add error handler.
 app.use((error, request, response, next) => {
   console.error(error);
   response.send(error);
 });
 
 module.exports = app;
+*/
