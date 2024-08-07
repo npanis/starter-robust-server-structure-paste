@@ -2,7 +2,8 @@
 const pastes = require("../data/pastes-data");
 
 function list(req, res) {
-  res.json({ data: pastes });
+  const { userId } = req.params;
+  res.json({ data: pastes.filter(userId ? paste => paste.user_id == userId : () => true) });
 }
 
 // Create - POST new Data
@@ -89,7 +90,6 @@ function exposurePropertyIsValid(req, res, next) {
   //Update
   function update(req, res) {
     const paste = res.locals.paste;
-    const foundPaste = pastes.find((paste) => paste.id === Number(pasteId));
     const { data: { name, syntax, expiration, exposure, text } = {} } = req.body;
   
     // Update the paste

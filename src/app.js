@@ -1,9 +1,7 @@
 const express = require("express");
 const app = express();
-const pastes = require("./data/pastes-data"); // Reads, executes, and returns the exports object from the ./data/pastes-data file, assigning it to a variable
 const pastesRouter = require("./pastes/pastes.router"); // import router
 const usersRouter = require("./users/users.router");
-const pastesRouter = require("./pastes/pastes.router");
 
 app.use(express.json());
 // GET

@@ -1,4 +1,5 @@
 const users = require("../data/users-data");
+const methodNotAllowed = require("../errors/methodNotAllowed");
 
 function list(req, res) {
   res.json({ data: users });
@@ -23,5 +24,6 @@ function read(req, res, next) {
 
 module.exports = {
   list,
-  read: [userExists, read]
+  read: [userExists, read],
+  userExists,
 };
